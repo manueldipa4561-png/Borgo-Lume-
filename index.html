@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Borgo Lume — a village painted by its people</title>
+  <meta name="description" content="Borgo Lume: a fictional Tuscan village, repainted by the people who live in it. A concept by Punto Due Studio.">
+  <meta name="theme-color" content="#cdc3b7">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-tod="day" data-mode="hero">
+  <canvas id="gl"></canvas>
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="top ui">
+    <a class="brand" href="#"><span class="glyph"></span>Borgo Lume</a>
+    <button id="tod" type="button" aria-pressed="false" aria-label="Switch between day and night">
+      <span class="lbl d">Giorno</span><span class="lbl n">Notte</span>
+      <span class="thumb">
+        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg>
+      </span>
+    </button>
+  </header>
+
+  <p class="side ui">Fictional village — concept by Punto Due Studio</p>
+
+  <section id="hero" class="ui">
+    <p class="coords fade">43.3188° N · 11.3308° E — Toscana</p>
+    <h1><span>Borgo</span> <em>Lume</em></h1>
+    <p class="tag fade">A village repainted, wall by wall, by the people who live in it.</p>
+    <p class="hint fade"><span class="line"></span>Scroll to walk in</p>
+  </section>
+
+  <section id="chapter" class="ui">
+    <p id="ch-kicker" class="kicker fade">Mural 01 / 06</p>
+    <h2 id="ch-title"></h2>
+    <p id="ch-meta" class="meta fade">Marta Pellegrini · 2023 · 6 × 10.2 m</p>
+    <p id="ch-line" class="line-copy fade">A neighbour’s kitchen sun, painted four storeys tall.</p>
+  </section>
+
+  <section id="outro" class="ui">
+    <p class="kicker fade">Fine · The end of the lane</p>
+    <h2 class="fade">Come for<br><em>the light.</em></h2>
+    <p class="line-copy fade">Borgo Lume isn’t a real place. It’s a concept by <em>Punto Due Studio</em>.</p>
+    <button id="replay" class="fade" type="button">Walk it again ↺</button>
+  </section>
+
+  <nav id="progress" class="ui" aria-hidden="true"></nav>
+
+  <div id="loader">
+    <div class="l-inner">
+      <div class="l-word">Borgo <em>Lume</em></div>
+      <div class="l-line"><i id="bar"></i></div>
+      <div class="l-count"><span id="count">00</span>%</div>
+    </div>
+  </div>
+
+  <script src="vendor/three.min.js"></script>
+  <script src="js/util.js"></script>
+  <script src="js/textures.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/murals.js"></script>
+  <script src="js/sky.js"></script>
+  <script src="js/tod.js"></script>
+  <script src="js/town.js"></script>
+  <script src="js/props.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
