@@ -9,7 +9,8 @@ body[data-tod="night"] { --paper: #0b1030; --ink: #f3e8d2; --accent: #ffb25a; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; }
 html { background: #cdc3b7; -webkit-font-smoothing: antialiased; }
 html, body { height: 100%; overflow: hidden; }
-body { color: var(--ink); font-family: var(--serif); overscroll-behavior: none; touch-action: none; }
+body { color: var(--ink); font-family: var(--serif); overscroll-behavior: none; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-text-size-adjust: 100%; }
+@supports (height: 100dvh) { html, body { height: 100dvh; } }
 #gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 
 .ui { position: fixed; z-index: 5; color: var(--ink); transition: color 1.2s ease; }
@@ -23,7 +24,7 @@ body[data-tod="night"] .scrim::after { opacity: 1; }
 .grain { opacity: .15; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
 
 /* ---- header ---- */
-.top { top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: var(--pad); }
+.top { top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: calc(var(--pad) + env(safe-area-inset-top)) calc(var(--pad) + env(safe-area-inset-right)) var(--pad) calc(var(--pad) + env(safe-area-inset-left)); }
 .brand { color: inherit; text-decoration: none; font: 400 clamp(20px, 2.1vw, 28px)/1 var(--serif); letter-spacing: -.01em; display: flex; align-items: center; }
 .glyph { width: .62em; height: .62em; border-radius: 50%; background: currentColor; margin-right: .5em; box-shadow: inset -.26em 0 0 0 var(--paper); transition: box-shadow 1.2s ease; }
 
@@ -44,19 +45,19 @@ body[data-tod="night"] .scrim::after { opacity: 1; }
 .side { left: 14px; top: 50%; white-space: nowrap; writing-mode: vertical-rl; transform: translateY(-50%) rotate(180deg); font: 400 10px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; opacity: .7; }
 
 /* ---- scenes of text ---- */
-#hero, #chapter, #outro { left: var(--pad); bottom: var(--pad); right: var(--pad); max-width: 1600px; pointer-events: none; }
-#hero h1 .w { padding-right: 0; }
+#hero, #chapter, #outro { left: calc(var(--pad) + env(safe-area-inset-left)); bottom: calc(var(--pad) + env(safe-area-inset-bottom)); right: calc(var(--pad) + env(safe-area-inset-right)); max-width: 1600px; pointer-events: none; }
+#hero h1 .w { padding: .1em .14em .4em .14em; margin: -.1em -.14em -.4em -.14em; }
 body[data-mode="outro"] #outro { pointer-events: auto; }
 #chapter, #outro { max-width: 760px; }
 
 /* words / letters slide up out of a mask; .fade blocks follow */
-.w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .05em .16em 0; margin-bottom: -.16em; }
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: .1em .08em .34em 0; margin: -.1em 0 -.34em 0; }  /* mask box is padded so ascenders/descenders (g, p, accents) are never clipped */
 .wi { display: inline-block; transform: translateY(115%) rotate(5deg); transform-origin: 0 100%; transition: transform .55s var(--ease); }
 .in .wi { transform: none; transition: transform 1.15s var(--ease) calc(var(--i) * 65ms + .1s); }
 .fade { opacity: 0; transform: translateY(16px); transition: opacity .4s ease, transform .5s var(--ease), color 1.2s ease; }
 .in .fade { opacity: 1; transform: none; transition: opacity .9s var(--ease) .45s, transform 1s var(--ease) .45s, color 1.2s ease; }
 
-.coords, .kicker, .meta, .hint { font: 400 clamp(10px, .9vw, 12px)/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+.coords, .kicker, .meta, .hint { font: 400 clamp(11px, .9vw, 12px)/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
 #hero h1 { font: 300 clamp(92px, 20.5vw, 330px)/.78 var(--serif); font-variation-settings: 'opsz' 144; letter-spacing: -.045em; margin: .12em 0 .34em -.04em; }
 #hero h1 em, #outro em { font-style: italic; color: var(--accent); transition: color 1.2s ease; }
 .tag { font: italic 300 clamp(18px, 1.9vw, 28px)/1.25 var(--serif); max-width: 22em; }
@@ -94,7 +95,8 @@ body.ready #loader { transform: translateY(-101%); }
 body.clean .ui, body.clean .scrim, body.clean .grain, body.clean .vignette, body.clean #loader { display: none; }
 
 @media (max-aspect-ratio: 1/1) {
-  #hero, #chapter, #outro { bottom: calc(var(--pad) + 28px); }
+  #hero, #chapter, #outro { bottom: calc(var(--pad) + 28px + env(safe-area-inset-bottom)); }
+  #tod { width: 120px; height: 44px; } #tod[aria-pressed="true"] .thumb { transform: translateX(76px); }
   #hero h1 { font-size: clamp(96px, 31vw, 220px); line-height: .8; }
   #hero h1 span { display: block; }
   .hint { position: static; margin-top: 18px; }
