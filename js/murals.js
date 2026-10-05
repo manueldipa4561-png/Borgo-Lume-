@@ -166,7 +166,7 @@
      generated artwork (BL.art, from js/art.js) once decoded; BL.artLoads lets boot wait for it. */
   BL.artLoads = [];
   BL.muralTexture = function (spec, seed) {
-    let k = 190; const longest = Math.max(spec.w, spec.h) * k; if (longest > 2200) k *= 2200 / longest;
+    const CAP = BL.MOBILE ? 1600 : 2200; let k = BL.MOBILE ? 130 : 190; const longest = Math.max(spec.w, spec.h) * k; if (longest > CAP) k *= CAP / longest;
     const W = Math.round(spec.w * k), H = Math.round(spec.h * k), c = BL.canvas(W, H), g = c.getContext('2d');
     spec.draw(g, W, H, BL.rng(seed)); finish(g, W, H, BL.rng(seed + 1));
     const tex = BL.canvasTexture(c, false), src = BL.art && BL.art[spec.id];

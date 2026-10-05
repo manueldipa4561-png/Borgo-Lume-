@@ -69,7 +69,7 @@
     const t0 = performance.now(); setCount(4); await nextFrame();
     const canvas = $('#gl');
     const renderer = new T.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-    let dpr = Math.min(devicePixelRatio || 1, 2); renderer.setPixelRatio(dpr);
+    let dpr = Math.min(devicePixelRatio || 1, BL.MOBILE ? 1.5 : 2); renderer.setPixelRatio(dpr);
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
     const scene = new T.Scene(); scene.fog = new T.Fog('#e8dcc6', 60, 380);
@@ -78,7 +78,7 @@
     const sky = BL.createSky(); scene.add(sky.mesh);
     const hills = BL.createHills(); scene.add(hills.group);
     const hemi = new T.HemisphereLight('#bfdcff', '#d2b08c', 1); scene.add(hemi);
-    const key = new T.DirectionalLight('#fff2da', 3); key.castShadow = true; key.shadow.mapSize.set(4096, 4096);
+    const key = new T.DirectionalLight('#fff2da', 3); key.castShadow = true; key.shadow.mapSize.setScalar(BL.MOBILE ? 2048 : 4096);
     Object.assign(key.shadow.camera, { left: -72, right: 72, top: 72, bottom: -72, near: 10, far: 560 });
     key.shadow.bias = -0.0004; key.shadow.normalBias = 0.05; scene.add(key, key.target);
     setCount(18); await nextFrame();
@@ -128,6 +128,7 @@
     });
     CH.forEach((_, i) => { const d = document.createElement('i'); d.addEventListener('click', () => !AUTO && goTo(i)); $('#progress').appendChild(d); });
     splitInto($('#hero h1 span'), 'Borgo', true, 0); splitInto($('#hero h1 em'), 'Lume', true, 5);
+    if (matchMedia('(pointer: coarse)').matches) $('#hero .hint').lastChild.textContent = 'Swipe up to walk in';
 
     /* ---- murals paint in the first time the camera gets close ---- */
     const rev = town.murals.map(() => ({ t: -1 }));
@@ -142,12 +143,15 @@
     const resetReveals = () => town.murals.forEach((m, i) => { rev[i].t = -1; m.reveal.value = 0; });
     if (startP > 0) town.murals.forEach((m, i) => { rev[i].t = PAINT_SECONDS; m.reveal.value = 1; });
 
-    function resize() {
+    let lastW = 0, lastH = 0, resizeTimer = 0;
+    function resize(force) {
       const w = innerWidth, h = innerHeight, a = w / h;
-      renderer.setSize(w, h, false); camera.aspect = a;
-      camera.userData.fov = a >= 1 ? 38 : Math.min(70, 38 + (1 / a - 1) * 34); camera.fov = camera.userData.fov; camera.updateProjectionMatrix();
+      if (force !== true && w === lastW && Math.abs(h - lastH) < 100) return;      // phone browser toolbars sliding in/out: don't reallocate the canvas
+      lastW = w; lastH = h; renderer.setSize(w, h, false); camera.aspect = a;
+      camera.userData.fov = a >= 1 ? 38 : Math.min(76, 2 * Math.atan(Math.tan(21 * Math.PI / 180) / a) * 180 / Math.PI);   // portrait: keep ~42° horizontal view
+      camera.fov = camera.userData.fov; camera.updateProjectionMatrix();
     }
-    addEventListener('resize', resize); resize();
+    addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 120); }); resize(true);
 
     tod.set(todNow); camera.position.set(0, 13, 56); renderer.compile(scene, camera);
     renderer.render(scene, camera); setCount(88); await nextFrame();
@@ -158,13 +162,13 @@
     setTimeout(() => { ready = true; document.body.classList.add('ready'); showChapter(idx, startP > 0 ? 350 : 1500); }, Math.max(0, 1500 - (performance.now() - t0)));
 
     const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
-    addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = e.clientY / innerHeight * 2 - 1; });
+    addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = e.clientY / innerHeight * 2 - 1; });
 
     /* adaptive resolution: drop the pixel ratio if frames run long */
     let slow = 0;
     const adapt = dt => {
       slow = dt > 0.024 ? slow + 1 : Math.max(0, slow - 1);
-      if (slow > 40 && dpr > 1) { dpr = Math.max(1, dpr - 0.25); renderer.setPixelRatio(dpr); resize(); slow = 0; }
+      if (slow > 40 && dpr > 1) { dpr = Math.max(1, dpr - 0.25); renderer.setPixelRatio(dpr); resize(true); slow = 0; }
     };
 
     const look = new T.Vector3(), pos = new T.Vector3(), right = new T.Vector3(1, 0, 0);

@@ -11,6 +11,9 @@
     };
   };
 
+  /* Phones/tablets: lower pixel ratio, smaller shadow map + textures, fewer particles. */
+  BL.MOBILE = matchMedia('(pointer: coarse)').matches || Math.min(screen.width, screen.height) < 700;
+
   BL.clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   BL.lerp = (a, b, t) => a + (b - a) * t;
   BL.smoothstep = (a, b, v) => { const t = BL.clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };

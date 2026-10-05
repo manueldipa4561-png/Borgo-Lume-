@@ -120,11 +120,11 @@
     const birds = new T.Points(birdGeo, new T.PointsMaterial({ map: BL.canvasTexture(bc, false), size: 1.3, transparent: true, depthWrite: false }));
     birds.frustumCulled = false; group.add(birds);
     const bs = Array.from({ length: N_BIRD }, () => ({ rad: 12 + r() * 16, sp: 0.18 + r() * 0.16, ph: r() * TAU, h: 26 + r() * 10, bob: r() * TAU }));
-    const N_FLY = 80, flies = additivePoints(N_FLY, 0.9, glowTex), fs = Array.from({ length: N_FLY }, () => ({ x: (r() - 0.5) * 18, y: 0.6 + r() * 3.2, z: 40 - r() * 88, ph: r() * TAU, sp: 0.4 + r() * 0.5 }));
+    const N_FLY = BL.MOBILE ? 40 : 80, flies = additivePoints(N_FLY, 0.9, glowTex), fs = Array.from({ length: N_FLY }, () => ({ x: (r() - 0.5) * 18, y: 0.6 + r() * 3.2, z: 40 - r() * 88, ph: r() * TAU, sp: 0.4 + r() * 0.5 }));
     group.add(flies);
 
     /* ---- dust motes in the light + chimney smoke ---- */
-    const N_DUST = 160, dust = additivePoints(N_DUST, 0.1, glowTex), dg = dust.geometry.attributes.color;
+    const N_DUST = BL.MOBILE ? 70 : 160, dust = additivePoints(N_DUST, 0.1, glowTex), dg = dust.geometry.attributes.color;
     const ds = Array.from({ length: N_DUST }, () => ({ x: (r() - 0.5) * 8, y: 1 + r() * 7, z: 44 - r() * 92, ph: r() * TAU, sp: 0.1 + r() * 0.25 }));
     group.add(dust);
     const chim = (town && town.chimneys) || [], PER = 4, N_SMOKE = chim.length * PER;
